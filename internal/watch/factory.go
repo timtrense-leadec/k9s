@@ -242,6 +242,12 @@ func (f *Factory) CanForInstance(fqn string, gvr *client.GVR, verbs []string) (i
 
 // ForResource returns an informer for a given resource.
 func (f *Factory) ForResource(ns string, gvr *client.GVR) (informers.GenericInformer, error) {
+	
+	// drop enclosing namespace when handling namespaces, since they are not namespaced themselves
+	if gvr == client.NsGVR {
+		ns = client.BlankNamespace
+	}
+
 	fact, err := f.ensureFactory(ns)
 	if err != nil {
 		return nil, err
